@@ -1,43 +1,49 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json;
-using PlaceHolder.Models;
+﻿using PlaceHolder.Models;
 
 namespace PlaceHolder.Services
 {
     public class ApiService
     {
-        public List<Post> GetDataByUserAndTitle(int userId, string title)
+
+        private static readonly List<Post> posts =
+    [
+        new Post { Id = 1, UserId = 1, Title = "Post 1 Title"},
+        new Post { Id = 2, UserId = 1, Title = "Post 2 Title"},
+        new Post { Id = 3, UserId = 2, Title = "Post 3 Title"},
+        new Post { Id = 4, UserId = 2, Title = "Post 4 Title" },
+        new Post { Id = 5, UserId = 3, Title = "Post 5 Title"}
+    ];
+
+        private static readonly List<User> users =
+    [
+        new User { Id = 1, FirstName = "Alice", LastName = "Johnson", Email = "alice.johnson@example.com", Avatar = "/images/alice.png", Support = new Support { Url = "https://support.example.com" } },
+        new User { Id = 2, FirstName = "Bob", LastName = "Smith", Email = "bob.smith@example.com", Avatar = "/images/bob.png", Support = new Support { Url = "https://support.example.com" } },
+        new User { Id = 3, FirstName = "Charlie", LastName = "Davis", Email = "charlie.davis@example.com", Avatar = "/images/charlie.png", Support = new Support { Url = "https://support.example.com" } },
+        new User { Id = 4, FirstName = "Diana", LastName = "Martinez", Email = "diana.martinez@example.com", Avatar = "/images/diana.png", Support = new Support { Url = "https://support.example.com" } },
+        new User { Id = 5, FirstName = "Ethan", LastName = "Taylor", Email = "ethan.taylor@example.com", Avatar = "/images/ethan.png", Support = new Support { Url = "https://support.example.com" } }
+    ];
+
+        public Post? GetDataByUserAndTitle(int userId, string title)
         {
-            return new List<Post>() { new() { Id = userId, Title = title } };
+            return posts.FirstOrDefault(_ => _.UserId == userId && _.Title == title);
         }
 
         public Post? GetDataById(int id)
-        { 
-            return new List<Post>().Where(x => x.Id == id).FirstOrDefault();
+        {
+            return posts.FirstOrDefault(_ => _.Id == id);
         }
 
-        public List<User> CreateUser(User user)
+        public User CreateUser(User user)
         {
-            var data = new List<User>()
-            {
-                new ()
-                {
-                    Id = user.Id,
-                    Avatar = user.Avatar,
-                    Email = user.Email,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Support= user.Support
-                }
-            };
+            user.Id = users.Count + 1;
 
-            return data;
+            users.Add(user);
+
+            return user;
         }
-
-        public List<User> UpdateUser(int id, User updatedUser)
+        public User? UpdateUser(int id, User updatedUser)
         {
-            var user = new List<User>().FirstOrDefault(x => x.Id == id);
+            var user = users.FirstOrDefault(x => x.Id == id);
             if (user != null)
             {
                 user.Email = updatedUser.Email;
@@ -47,12 +53,12 @@ namespace PlaceHolder.Services
                 user.Support = updatedUser.Support;
             }
 
-            return new List<User> { user };
+            return user ;
         }
 
         public Task DeletePostById(int id)
         {
-            var post = new List<Post>().FirstOrDefault(x => x.Id == id);
+            var post = posts.FirstOrDefault(x => x.Id == id);
             if (post != null)
             {
                 var posts = new List<Post>();

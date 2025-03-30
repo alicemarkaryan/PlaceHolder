@@ -1,10 +1,13 @@
+using PlaceHolder.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 
-
+builder.Services.AddScoped<ApiService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 
 var app = builder.Build();
 
